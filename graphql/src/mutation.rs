@@ -1,6 +1,6 @@
 use super::context::ContextData;
 
-use crate::model;
+use db::model;
 
 use model::user::User;
 

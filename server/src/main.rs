@@ -1,7 +1,3 @@
-mod model;
-mod sql;
-mod graphql;
-
 use std::env;
 use dotenv::dotenv;
 use async_graphql::{EmptySubscription, Schema};
@@ -45,7 +41,7 @@ async fn main() -> Result<()> {
     let host = env::var("HOST").expect("HOST is not set");
     let port = env::var("PORT").expect("PORT is not set");
 
-	let db = sql::Database::new(&database_url).await?;
+	let db = db::Database::new(&database_url).await?;
 
 	let schema = Schema::build(QueryRoot, MutationRoot, EmptySubscription)
 		.data(ContextData { db })

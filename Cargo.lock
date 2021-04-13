@@ -819,7 +819,7 @@ dependencies = [
  "num-integer",
  "num-traits",
  "serde",
- "time 0.1.43",
+ "time 0.1.44",
  "winapi 0.3.9",
 ]
 
@@ -856,30 +856,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ddfc5b9aa5d4507acaf872de71051dfd0e309860e88966e1051e462a077aac4f"
 dependencies = [
  "bitflags",
-]
-
-[[package]]
-name = "comets-api"
-version = "0.1.0"
-dependencies = [
- "actix-web",
- "argonautica",
- "async-graphql",
- "async-graphql-actix-web",
- "chrono",
- "dotenv",
- "env_logger 0.7.1",
- "futures 0.3.14",
- "http",
- "serde",
- "serde_json",
- "shrinkwraprs",
- "sqlx",
- "tokio",
- "tracing",
- "tracing-subscriber",
- "unicode-width",
- "uuid",
 ]
 
 [[package]]
@@ -1026,6 +1002,26 @@ dependencies = [
  "darling_core",
  "quote 1.0.9",
  "syn",
+]
+
+[[package]]
+name = "db"
+version = "0.1.0"
+dependencies = [
+ "argonautica",
+ "async-graphql",
+ "chrono",
+ "env_logger 0.7.1",
+ "futures 0.3.14",
+ "serde",
+ "serde_json",
+ "shrinkwraprs",
+ "sqlx",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
+ "unicode-width",
+ "uuid",
 ]
 
 [[package]]
@@ -1383,7 +1379,7 @@ checksum = "c9495705279e7140bf035dde1f6e750c162df8b625267cd52cc44e0b156732c8"
 dependencies = [
  "cfg-if 1.0.0",
  "libc",
- "wasi 0.10.2+wasi-snapshot-preview1",
+ "wasi 0.10.0+wasi-snapshot-preview1",
 ]
 
 [[package]]
@@ -1397,6 +1393,26 @@ name = "glob"
 version = "0.2.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8be18de09a56b60ed0edf84bc9df007e30040691af7acd1c41874faac5895bfb"
+
+[[package]]
+name = "graphql"
+version = "0.1.0"
+dependencies = [
+ "argonautica",
+ "async-graphql",
+ "chrono",
+ "db",
+ "env_logger 0.7.1",
+ "futures 0.3.14",
+ "serde",
+ "serde_json",
+ "shrinkwraprs",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
+ "unicode-width",
+ "uuid",
+]
 
 [[package]]
 name = "h2"
@@ -2544,6 +2560,31 @@ dependencies = [
 ]
 
 [[package]]
+name = "server"
+version = "0.1.0"
+dependencies = [
+ "actix-web",
+ "argonautica",
+ "async-graphql",
+ "async-graphql-actix-web",
+ "chrono",
+ "db",
+ "dotenv",
+ "env_logger 0.7.1",
+ "futures 0.3.14",
+ "graphql",
+ "http",
+ "serde",
+ "serde_json",
+ "shrinkwraprs",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
+ "unicode-width",
+ "uuid",
+]
+
+[[package]]
 name = "sha-1"
 version = "0.8.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2910,11 +2951,12 @@ dependencies = [
 
 [[package]]
 name = "time"
-version = "0.1.43"
+version = "0.1.44"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ca8a50ef2360fbd1eeb0ecd46795a87a19024eb4b53c5dc916ca1fd95fe62438"
+checksum = "6db9e6914ab8b1ae1c260a4ae7a49b6c5611b40328a735b21862567685e73255"
 dependencies = [
  "libc",
+ "wasi 0.10.0+wasi-snapshot-preview1",
  "winapi 0.3.9",
 ]
 
@@ -3286,9 +3328,9 @@ checksum = "cccddf32554fecc6acb585f82a32a72e28b48f8c4c1883ddfeeeaa96f7d8e519"
 
 [[package]]
 name = "wasi"
-version = "0.10.2+wasi-snapshot-preview1"
+version = "0.10.0+wasi-snapshot-preview1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fd6fbd9a79829dd1ad0cc20627bf1ed606756a7f77edff7b66b7064f9cb327c6"
+checksum = "1a143597ca7c7793eff794def352d41792a93c481eb1042423ff7ff72ba2c31f"
 
 [[package]]
 name = "wasm-bindgen"

@@ -1,4 +1,4 @@
-use crate::model::user::User;
+use super::model::user::User;
 use uuid::Uuid;
 use argonautica::Hasher;
 use super::db::Database;

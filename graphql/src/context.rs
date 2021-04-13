@@ -1,4 +1,4 @@
-use crate::sql::Database;
+use db::Database;
 
 pub struct ContextData {
 	pub db: Database
