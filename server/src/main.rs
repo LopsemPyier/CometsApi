@@ -47,14 +47,14 @@ async fn main() -> Result<()> {
 		.data(ContextData { db })
 		.finish();
 
-	println!("Graphiql Playground: http://localhost:8000");
+	println!("Graphiql Playground: http://localhost:8000/graphiql");
 
 	let server = HttpServer::new(move || {
         App::new()
             .data(schema.clone())
             .wrap(middleware::Logger::default())
             .service(web::resource("/").guard(guard::Post()).to(index))
-            .service(web::resource("/").guard(guard::Get()).to(index_playground))
+            .service(web::resource("/graphiql").guard(guard::Get()).to(index_playground))
             .route("/ping", web::get().to(ping))
     });
 

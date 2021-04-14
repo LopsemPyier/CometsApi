@@ -1,20 +1,24 @@
 use super::context::ContextData;
 
-use db::model;
+use model::dto::auth::{ LoginDto, RegisterDto };
 
-use model::user::User;
+use service::auth;
 
-use async_graphql::{ Context, FieldResult, ID };
-use uuid::Uuid;
+use async_graphql::{ Context, FieldResult };
 
 pub struct Mutation;
 
 #[async_graphql::Object]
 impl Mutation{
-	pub async fn create_user(&self, ctx: &Context<'_>, username: String, password: String, email: String) -> FieldResult<User> {
+	pub async fn register(&self, ctx: &Context<'_>, input: RegisterDto) -> FieldResult<String> {
 		let data = ctx.data::<ContextData>()?;
-		let user = data.db.create_user(username, password, email).await?;
 
-		Ok(user.into())
+		auth::register(input, &data.db).await
+	}
+
+	pub async fn login(&self, ctx: &Context<'_>, input: LoginDto) -> FieldResult<String> {
+		let data = ctx.data::<ContextData>()?;
+
+		auth::login(input, &data.db).await
 	}
 }

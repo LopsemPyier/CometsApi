@@ -2,5 +2,8 @@
 members = [
 	"db",
 	"graphql",
+	"utils",
+	"model",
+	"service",
 	"server"
 ]

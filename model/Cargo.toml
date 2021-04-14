@@ -1,5 +1,5 @@
 [package]
-name = "db"
+name = "model"
 version = "0.1.0"
 authors = ["LopsemPyier <LopsemPyier@gmail.com>"]
 edition = "2018"
@@ -21,4 +21,3 @@ tokio = { version = "0.2", features = ["macros"] }
 unicode-width = "0.1.8"
 shrinkwraprs = "0.3.0"
 utils = { path = "../utils" }
-model = { path = "../model" }
