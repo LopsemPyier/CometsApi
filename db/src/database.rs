@@ -1,4 +1,4 @@
-use sqlx::postgres::PgPool;
+use sqlx::postgres::{ PgPool, PgPoolOptions };
 use model::error::DatabaseError;
 
 #[derive(Debug)]
@@ -8,9 +8,9 @@ pub struct Database {
 
 impl Database {
 	pub async fn new(database_url: &str) -> Result<Database, DatabaseError> {
-		let pool = PgPool::builder()
-			.max_size(5)
-			.build(database_url)
+		let pool = PgPoolOptions::new()
+			.max_connections(5)
+			.connect(database_url)
 			.await?;
 		
 		let db = Database { pool };

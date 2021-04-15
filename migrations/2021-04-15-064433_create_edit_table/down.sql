@@ -1,0 +1,3 @@
+DROP TABLE edits;
+
+DROP TYPE ACTION;

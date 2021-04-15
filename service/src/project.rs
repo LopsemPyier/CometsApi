@@ -22,5 +22,7 @@ pub async fn get_by_uuid(id: Uuid, db: &Database) -> FieldResult<ProjectObject> 
 pub async fn create(db: &Database, user_id: Uuid, name: String, description: String) -> FieldResult<ProjectObject> {
     let project = db.create_project(name, description, user_id).await?;
 
+
+
     Ok(ProjectObject::from(project))
 }

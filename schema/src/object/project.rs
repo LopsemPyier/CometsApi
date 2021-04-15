@@ -3,6 +3,8 @@ use model::project::Project;
 use super::user::UserObject;
 use async_graphql::Context;
 use crate::context::ContextData;
+use crate::object::edit::EditObject;
+use model::edit::Edit;
 
 #[derive(Debug)]
 pub struct ProjectObject {
@@ -34,6 +36,20 @@ impl ProjectObject {
         let data = ctx.data::<ContextData>().unwrap();
         let authors = Project::get_authors(&data.db.pool, self.id).await.unwrap();
         authors.into_iter().map(UserObject::from).collect()
+    }
+
+    /// The edits of the project
+    pub async fn edits(&self, ctx: &Context<'_>) -> Vec<EditObject> {
+        let data = ctx.data::<ContextData>().unwrap();
+        let edits = Edit::get_for_project(&data.db.pool, self.id).await.unwrap();
+        edits.into_iter().map(EditObject::from).collect()
+    }
+
+    /// The last edit of the project
+    pub async fn last_edit(&self, ctx: &Context<'_>) -> EditObject {
+        let data = ctx.data::<ContextData>().unwrap();
+        let edit = Edit::get_last_for_project(&data.db.pool, self.id).await.unwrap();
+        EditObject::from(edit)
     }
 }
 

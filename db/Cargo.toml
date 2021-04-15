@@ -9,6 +9,6 @@ edition = "2018"
 [dependencies]
 chrono = { version = "0.4.19", features = ["serde"] }
 uuid = { version = "0.8.1", features = ["serde", "v4"] }
-sqlx = { version = "0.3.5", default-features = false, features = [ "runtime-tokio", "postgres", "uuid", "chrono", "json", "macros" ] }
+sqlx = { version = "0.4.0", default-features = false, features = [ "runtime-tokio-native-tls", "postgres", "uuid", "chrono", "json", "macros" ] }
 utils = { path = "../utils" }
 model = { path = "../model" }
