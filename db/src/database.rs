@@ -1,6 +1,7 @@
 use sqlx::postgres::PgPool;
 use model::error::DatabaseError;
 
+#[derive(Debug)]
 pub struct Database {
 	pub pool: PgPool
 }

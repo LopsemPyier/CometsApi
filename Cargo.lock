@@ -1008,19 +1008,9 @@ dependencies = [
 name = "db"
 version = "0.1.0"
 dependencies = [
- "async-graphql",
  "chrono",
- "env_logger 0.7.1",
- "futures 0.3.14",
  "model",
- "serde",
- "serde_json",
- "shrinkwraprs",
  "sqlx",
- "tokio",
- "tracing",
- "tracing-subscriber",
- "unicode-width",
  "utils",
  "uuid",
 ]
@@ -1401,18 +1391,8 @@ version = "0.1.0"
 dependencies = [
  "async-graphql",
  "chrono",
- "db",
- "env_logger 0.7.1",
- "futures 0.3.14",
- "model",
- "serde",
- "serde_json",
+ "schema",
  "service",
- "shrinkwraprs",
- "tokio",
- "tracing",
- "tracing-subscriber",
- "unicode-width",
  "utils",
  "uuid",
 ]
@@ -2550,6 +2530,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "schema"
+version = "0.1.0"
+dependencies = [
+ "async-graphql",
+ "chrono",
+ "db",
+ "model",
+ "utils",
+ "uuid",
+]
+
+[[package]]
 name = "scopeguard"
 version = "0.3.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2647,24 +2639,15 @@ name = "server"
 version = "0.1.0"
 dependencies = [
  "actix-web",
- "argonautica",
  "async-graphql",
  "async-graphql-actix-web",
- "chrono",
  "db",
  "dotenv",
  "env_logger 0.7.1",
  "futures 0.3.14",
  "graphql",
  "http",
- "serde",
- "serde_json",
- "shrinkwraprs",
- "tokio",
- "tracing",
- "tracing-subscriber",
- "unicode-width",
- "uuid",
+ "utils",
 ]
 
 [[package]]
@@ -2674,16 +2657,8 @@ dependencies = [
  "async-graphql",
  "chrono",
  "db",
- "env_logger 0.7.1",
  "futures 0.3.14",
- "model",
- "serde",
- "serde_json",
- "shrinkwraprs",
- "tokio",
- "tracing",
- "tracing-subscriber",
- "unicode-width",
+ "schema",
  "utils",
  "uuid",
 ]
@@ -3420,7 +3395,6 @@ dependencies = [
  "actix-web",
  "argonautica",
  "chrono",
- "dotenv",
  "jsonwebtoken",
  "lazy_static",
  "serde",

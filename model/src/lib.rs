@@ -1,6 +1,6 @@
 pub mod user;
 pub mod error;
-pub mod dto;
+pub mod project;
 
 #[cfg(test)]
 mod tests {

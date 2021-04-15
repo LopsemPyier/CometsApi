@@ -1,8 +1,8 @@
 use super::error::DatabaseError;
 
-
 use uuid::Uuid;
 use sqlx::PgPool;
+use crate::project::Project;
 
 #[derive(Debug, sqlx::FromRow)]
 pub struct User {
@@ -10,21 +10,6 @@ pub struct User {
 	pub username: String,
 	pub password: String,
 	pub email: String
-}
-
-#[async_graphql::Object]
-impl User {
-	pub async fn id(&self) -> async_graphql::ID {
-		self.id.into()
-	}
-
-	pub async fn username(&self) -> &str {
-		&self.username
-	}
-	
-	pub async fn email(&self) -> &str {
-		&self.email
-	} 
 }
 
 impl User {
@@ -50,6 +35,20 @@ impl User {
 				Err(err.into())
 			}
 		}
+	}
+
+	pub async fn get_projects_for_user(pool: &PgPool, user_id: Uuid) -> Result<Vec<Project>, DatabaseError> {
+		let projects_row = sqlx::query_as!(
+			Project,
+			r#"
+				SELECT id, name, description FROM projects JOIN users_projects ON users_projects.project_id = projects.id WHERE users_projects.user_id = $1;
+			"#,
+			user_id
+		)
+			.fetch_all(pool)
+			.await?;
+
+		Ok(projects_row)
 	}
 
 	pub async fn get_all(pool: &PgPool) -> Result<Vec<User>, DatabaseError> {

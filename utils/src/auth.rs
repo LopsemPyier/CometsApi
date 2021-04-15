@@ -6,9 +6,16 @@ use chrono::{Duration, Local};
 use jsonwebtoken::{decode, DecodingKey, TokenData, Validation};
 use jsonwebtoken::{encode, EncodingKey, Header};
 use serde::{Deserialize, Serialize};
+use uuid::Uuid;
 
+#[derive(Debug)]
+pub struct ContextToken {
+    pub user_id: Uuid,
+    pub token: String,
+    // pub user: User
+}
 
-#[derive(Deserialize, Serialize)]
+#[derive(Deserialize, Serialize, Debug)]
 pub struct Claims {
     pub id: String,
     pub exp: i64,
@@ -34,7 +41,7 @@ pub fn verify_password(hash: &str, password: &str) -> bool {
 
 
 pub fn create_token(user_id: uuid::Uuid, username: String) -> String {
-    let exp_time = Local::now() + Duration::minutes(60);
+    let exp_time = Local::now() + Duration::days(7);
 
     let claims = Claims {
         id: user_id.to_string(),
@@ -46,7 +53,7 @@ pub fn create_token(user_id: uuid::Uuid, username: String) -> String {
         .expect("Can't create token")
 }
 
-pub fn get_jwt_payload(http_request: HttpRequest) -> Option<uuid::Uuid> {
+pub fn get_jwt_payload(http_request: HttpRequest) -> Option<ContextToken> {
 	http_request
         .headers()
         .get("Authorization")
@@ -54,7 +61,10 @@ pub fn get_jwt_payload(http_request: HttpRequest) -> Option<uuid::Uuid> {
             let jwt_start_index = "Bearer ".len();
             let jwt = s[jwt_start_index..s.len()].to_string();
             let token_data = decode_token(&jwt);
-			return uuid::Uuid::parse_str(&token_data.claims.id).unwrap();
+			return ContextToken {
+                token: jwt,
+                user_id: Uuid::parse_str(&token_data.claims.id).unwrap()
+            }
         }))
 }
 

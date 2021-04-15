@@ -7,18 +7,8 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-async-graphql = { version = "2.0", features = ["uuid", "chrono", "tracing"] }
-serde = "1.0"
-serde_json = "1.0"
-env_logger = "0.7.1"
 chrono = { version = "0.4.19", features = ["serde"] }
 uuid = { version = "0.8.1", features = ["serde", "v4"] }
 sqlx = { version = "0.3.5", default-features = false, features = [ "runtime-tokio", "postgres", "uuid", "chrono", "json", "macros" ] }
-tracing = "0.1.22"
-tracing-subscriber = "0.2.15"
-futures = "0.3.5"
-tokio = { version = "0.2", features = ["macros"] }
-unicode-width = "0.1.8"
-shrinkwraprs = "0.3.0"
 utils = { path = "../utils" }
 model = { path = "../model" }

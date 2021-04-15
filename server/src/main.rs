@@ -3,6 +3,7 @@ use dotenv::dotenv;
 use async_graphql::{EmptySubscription, Schema};
 
 use graphql::{ContextData, QueryRoot, MutationRoot};
+use utils::auth::get_jwt_payload;
 
 use async_graphql::http::{playground_source, GraphQLPlaygroundConfig};
 use async_graphql_actix_web::{Request, Response};
@@ -20,8 +21,13 @@ async fn ping(_req: HttpRequest) -> impl Responder {
 
 type SchemaWeb = Schema<QueryRoot, MutationRoot, EmptySubscription>;
 
-async fn index(schema: web::Data<SchemaWeb>, req: Request) -> Response {
-    schema.execute(req.into_inner()).await.into()
+async fn index(schema: web::Data<SchemaWeb>, req: HttpRequest, gql_request: Request) -> Response {
+    let context_token = get_jwt_payload(req);
+    let mut request = gql_request.into_inner();
+    if let Some(token) = context_token {
+        request = request.data(token);
+    }
+    schema.execute(request).await.into()
 }
 
 async fn index_playground() -> HttpResponse {

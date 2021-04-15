@@ -1,10 +1,12 @@
-use super::context::ContextData;
+use schema::context::ContextData;
 
-use model::dto::auth::{ LoginDto, RegisterDto };
+use schema::dto::auth::{ LoginDto, RegisterDto };
+use schema::dto::project::ProjectDto;
 
-use service::auth;
+use service::{ auth, project };
 
-use async_graphql::{ Context, FieldResult };
+use async_graphql::{Context, FieldResult, Error};
+use schema::object::project::ProjectObject;
 
 pub struct Mutation;
 
@@ -20,5 +22,14 @@ impl Mutation{
 		let data = ctx.data::<ContextData>()?;
 
 		auth::login(input, &data.db).await
+	}
+
+	pub async fn create_project(&self, ctx: &Context<'_>, input: ProjectDto) -> FieldResult<ProjectObject> {
+		let token = ctx.data_opt::<utils::auth::ContextToken>();
+		if let Some(token) = token {
+			let data = ctx.data::<ContextData>()?;
+			return project::create(&data.db, token.user_id, input.name, input.description).await;
+		}
+		Err(Error::new("No token provided"))
 	}
 }
