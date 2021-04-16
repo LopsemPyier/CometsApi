@@ -1,7 +1,8 @@
-use async_graphql::{FieldResult, Error};
+use async_graphql::{FieldResult, ErrorExtensions};
 use db::Database;
 use schema::object::user::UserObject;
 use uuid::Uuid;
+use schema::error::common::CommonError;
 
 pub async fn get_all(db: &Database) -> FieldResult<Vec<UserObject>> {
     let users_row = db.get_users().await?;
@@ -15,7 +16,7 @@ pub async fn get_by_uuid(id: Uuid, db: &Database) -> FieldResult<UserObject> {
     if let Some(user) = user_row {
         Ok(UserObject::from(user))
     } else {
-        Err(Error::new("User not found"))
+        Err(CommonError::NotFound(id).extend())
     }
 }
 

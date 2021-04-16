@@ -1,7 +1,8 @@
-use async_graphql::{FieldResult, Error};
+use async_graphql::{FieldResult, ErrorExtensions};
 use schema::dto::auth::{ LoginDto, RegisterDto };
 use db::Database;
 use utils::auth::{ create_token, verify_password };
+use schema::error::auth::AuthError;
 
 pub async fn register(input: RegisterDto, db: &Database) -> FieldResult<String> {
     let user = db.get_user_by_email(&input.email.to_lowercase()).await?;
@@ -11,7 +12,7 @@ pub async fn register(input: RegisterDto, db: &Database) -> FieldResult<String> 
         return Ok(create_token(new.id, new.username));
     }
 
-    Err(Error::new("Email already taken"))
+    Err(AuthError::EmailTaken.extend())
 }
 
 pub async fn login(input: LoginDto, db: &Database) -> FieldResult<String> {
@@ -21,8 +22,8 @@ pub async fn login(input: LoginDto, db: &Database) -> FieldResult<String> {
         return if verify_password(&user.password, &input.password) {
             Ok(create_token(user.id, user.username))
         } else {
-            Err(Error::new("Invalid password"))
+            Err(AuthError::InvalidPassword.extend())
         }
     }
-    Err(Error::new("Invalid email"))
+    Err(AuthError::InvalidUsername.extend())
 }
