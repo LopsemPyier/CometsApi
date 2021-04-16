@@ -12,11 +12,9 @@ pub struct Project {
 
 impl Project {
     pub async fn create(pool: &PgPool, name: String, description: String, user_id: Uuid) -> Result<Project, DatabaseError> {
-        let result = sqlx::query_as!(
+        let result = sqlx::query_file_as!(
 			Project,
-			r#"
-				INSERT INTO projects (name, description) VALUES ($1, $2) RETURNING *;
-			"#,
+			"src/sql/project/create.sql",
             name,
             description
 		)
@@ -36,10 +34,8 @@ impl Project {
     }
 
     pub async fn add_author(pool: &PgPool, project_id: Uuid, user_id: Uuid) -> Result<(), DatabaseError> {
-        let result = sqlx::query!(
-            r#"
-                INSERT INTO users_projects (user_id, project_id) VALUES ($1, $2);
-            "#,
+        let result = sqlx::query_file!(
+            "src/sql/project/add_author.sql",
             user_id,
             project_id
         )
@@ -48,7 +44,6 @@ impl Project {
 
         match result {
             Ok(_) => {
-
                 Ok(())
             }
             Err(err) => {
@@ -59,11 +54,9 @@ impl Project {
     }
 
     pub async fn get_authors(pool: &PgPool, project_id: Uuid) -> Result<Vec<User>, DatabaseError> {
-        let authors_row = sqlx::query_as!(
+        let authors_row = sqlx::query_file_as!(
 			User,
-			r#"
-				SELECT id, username, email, password FROM users JOIN users_projects ON users_projects.user_id = users.id WHERE users_projects.project_id = $1;
-			"#,
+			"src/sql/project/get_authors.sql",
 			project_id
 		)
             .fetch_all(pool)
@@ -73,9 +66,9 @@ impl Project {
     }
 
     pub async fn get_all(pool: &PgPool) -> Result<Vec<Project>, DatabaseError> {
-        let projects_row = sqlx::query_as!(
+        let projects_row = sqlx::query_file_as!(
 			Project,
-			r#"SELECT * FROM projects;"#
+			"src/sql/project/get_all.sql"
 		)
             .fetch_all(pool)
             .await?;
@@ -84,11 +77,9 @@ impl Project {
     }
 
     pub async fn get_by_uuid(pool: &PgPool, id: Uuid) -> Result<Option<Project>, DatabaseError> {
-        let project_row = sqlx::query_as!(
+        let project_row = sqlx::query_file_as!(
 			Project,
-			r#"
-				SELECT * FROM projects WHERE id = $1
-			"#,
+			"src/sql/project/get_by_uuid.sql",
 			id
 		)
             .fetch_optional(pool)

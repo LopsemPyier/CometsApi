@@ -14,11 +14,9 @@ pub struct User {
 
 impl User {
 	pub async fn create(pool: &PgPool, username: String, password: String, email: String) -> Result<User, DatabaseError> {
-		let result = sqlx::query_as!(
+		let result = sqlx::query_file_as!(
 			User,
-			r#"
-				INSERT INTO users (username, password, email) VALUES ($1, $2, $3) RETURNING *;
-			"#,
+			"src/sql/user/create.sql",
 			username,
 			password,
 			email
@@ -38,11 +36,9 @@ impl User {
 	}
 
 	pub async fn get_projects_for_user(pool: &PgPool, user_id: Uuid) -> Result<Vec<Project>, DatabaseError> {
-		let projects_row = sqlx::query_as!(
+		let projects_row = sqlx::query_file_as!(
 			Project,
-			r#"
-				SELECT id, name, description FROM projects JOIN users_projects ON users_projects.project_id = projects.id WHERE users_projects.user_id = $1;
-			"#,
+			"src/sql/user/get_projects.sql",
 			user_id
 		)
 			.fetch_all(pool)
@@ -52,9 +48,9 @@ impl User {
 	}
 
 	pub async fn get_all(pool: &PgPool) -> Result<Vec<User>, DatabaseError> {
-		let users_row = sqlx::query_as!(
+		let users_row = sqlx::query_file_as!(
 			User,
-			r#"SELECT * FROM users;"#
+			"src/sql/user/get_all.sql"
 		)
 			.fetch_all(pool)
 			.await?;
@@ -63,9 +59,9 @@ impl User {
 	}
 
 	pub async fn get_by_email(pool: &PgPool, email: &String) -> Result<Option<User>, DatabaseError> {
-		let user_row = sqlx::query_as!(
+		let user_row = sqlx::query_file_as!(
 			User,
-			r#"SELECT * FROM users WHERE email = $1;"#,
+			"src/sql/user/get_by_email.sql",
 			email
 		)
 			.fetch_optional(pool)
@@ -75,11 +71,9 @@ impl User {
 	}
 
 	pub async fn get_by_uuid(pool: &PgPool, user_id: Uuid) -> Result<Option<User>, DatabaseError> {
-		let user_row = sqlx::query_as!(
+		let user_row = sqlx::query_file_as!(
 			User,
-			r#"
-				SELECT * FROM users WHERE id = $1
-			"#,
+			"src/sql/user/get_by_uuid.sql",
 			user_id
 		)
 			.fetch_optional(pool)
