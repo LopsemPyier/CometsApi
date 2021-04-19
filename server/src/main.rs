@@ -8,6 +8,7 @@ use utils::auth::get_jwt_payload;
 use async_graphql::http::{playground_source, GraphQLPlaygroundConfig};
 use async_graphql_actix_web::{Request, Response};
 use actix_web::{guard, middleware, web, App, HttpRequest, HttpServer, HttpResponse, Responder};
+use actix_cors::Cors;
 
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error + Send + Sync>>;
 
@@ -56,7 +57,10 @@ async fn main() -> Result<()> {
 	println!("Graphiql Playground: http://localhost:8000/graphiql");
 
 	let server = HttpServer::new(move || {
+        let cors = Cors::permissive(); // TODO: Be less permissive
+
         App::new()
+            .wrap(cors)
             .data(schema.clone())
             .wrap(middleware::Logger::default())
             .service(web::resource("/").guard(guard::Post()).to(index))
