@@ -28,7 +28,7 @@ impl ProjectObject {
 
     /// The project description
     pub async fn description(&self) -> &str {
-        &self.name
+        &self.description
     }
 
     /// The authors of the project
