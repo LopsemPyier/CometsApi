@@ -18,6 +18,7 @@ jobs:
       postgres:
         image: postgres:latest
         env:
+          POSTGRES_HOST: postgres
           POSTGRES_DB: postgres        
           POSTGRES_PASSWORD: postgres
           POSTGRES_USER: postgres
@@ -37,21 +38,12 @@ jobs:
         cargo install sqlx-cli --no-default-features --features postgres
         sqlx database setup
       env:
-        POSTGRES_USER: postgres
-        POSTGRES_PASSWORD: postgres
-        POSTGRES_DB: postgres
-        POSTGRES_PORT: ${{ job.services.postgres.ports[5432] }}
+        DATABASE_URL: postgres://postres:postgres@postgres/postgres
     - name: Build
       run: cargo build --verbose
       env:
-        POSTGRES_USER: postgres
-        POSTGRES_PASSWORD: postgres
-        POSTGRES_DB: postgres
-        POSTGRES_PORT: ${{ job.services.postgres.ports[5432] }}
+        DATABASE_URL: postgres://postres:postgres@postgres/postgres
     - name: Run tests
       run: cargo test --verbose
       env:
-        POSTGRES_USER: postgres
-        POSTGRES_PASSWORD: postgres
-        POSTGRES_DB: postgres
-        POSTGRES_PORT: ${{ job.services.postgres.ports[5432] }}
+        DATABASE_URL: postgres://postres:postgres@postgres/postgres
