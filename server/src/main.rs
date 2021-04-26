@@ -1,14 +1,14 @@
 use std::env;
-use dotenv::dotenv;
-use async_graphql::{EmptySubscription, Schema};
 
-use graphql::{ContextData, QueryRoot, MutationRoot};
-use utils::auth::get_jwt_payload;
-
-use async_graphql::http::{playground_source, GraphQLPlaygroundConfig};
-use async_graphql_actix_web::{Request, Response};
-use actix_web::{guard, middleware, web, App, HttpRequest, HttpServer, HttpResponse, Responder};
 use actix_cors::Cors;
+use actix_web::{App, guard, HttpRequest, HttpResponse, HttpServer, middleware, Responder, web};
+use async_graphql::{EmptySubscription, Schema};
+use async_graphql::http::{GraphQLPlaygroundConfig, playground_source};
+use async_graphql_actix_web::{Request, Response};
+use dotenv::dotenv;
+
+use graphql::{ContextData, MutationRoot, QueryRoot};
+use utils::auth::get_jwt_payload;
 
 type Result<T> = std::result::Result<T, Box<dyn std::error::Error + Send + Sync>>;
 
@@ -54,8 +54,6 @@ async fn main() -> Result<()> {
 		.data(ContextData { db })
 		.finish();
 
-	println!("Graphiql Playground: http://localhost:8000/graphiql");
-
 	let server = HttpServer::new(move || {
         let cors = Cors::permissive(); // TODO: Be less permissive
 
@@ -67,6 +65,8 @@ async fn main() -> Result<()> {
             .service(web::resource("/graphiql").guard(guard::Get()).to(index_playground))
             .route("/ping", web::get().to(ping))
     });
+
+    println!("Graphiql Playground: http://{}:{}/graphiql", host, port);
 
     server.bind(format!("{}:{}", host, port))?.run().await?;
 
