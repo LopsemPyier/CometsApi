@@ -1,4 +1,4 @@
-use argonautica::{Hasher, Verifier};
+use argon2::{self, Config};
 use super::env::{ PASSWORD_SECRET_KEY, JWT_SECRET_KEY };
 
 use actix_web::HttpRequest;
@@ -23,19 +23,15 @@ pub struct Claims {
 }
 
 pub fn hash_password(password: &str) -> String {
-    Hasher::default()
-        .with_password(password)
-        .with_secret_key(PASSWORD_SECRET_KEY.as_str())
-        .hash()
+    let config: Config = Config::default();
+    argon2
+        ::hash_encoded(password.as_bytes(), PASSWORD_SECRET_KEY.as_bytes(), &config)
 		.unwrap()
 }
 
 pub fn verify_password(hash: &str, password: &str) -> bool {
-    Verifier::default()
-        .with_hash(hash)
-        .with_password(password)
-        .with_secret_key(PASSWORD_SECRET_KEY.as_str())
-        .verify()
+    argon2
+        ::verify_encoded(hash, password.as_bytes())
 		.unwrap()
 }
 
