@@ -1,16 +1,20 @@
-use uuid::Uuid;
-use model::project::Project;
-use super::user::UserObject;
 use async_graphql::Context;
+use uuid::Uuid;
+
+use model::{edit::Edit, files::File};
+use model::project::Project;
+
 use crate::context::ContextData;
 use crate::object::edit::EditObject;
-use model::edit::Edit;
+use crate::object::file::FileObject;
+
+use super::user::UserObject;
 
 #[derive(Debug)]
 pub struct ProjectObject {
     pub id: Uuid,
     pub name: String,
-    pub description: String
+    pub description: String,
 }
 
 #[async_graphql::Object]
@@ -50,6 +54,13 @@ impl ProjectObject {
         let data = ctx.data::<ContextData>().unwrap();
         let edit = Edit::get_last_for_project(&data.db.pool, self.id).await.unwrap();
         EditObject::from(edit)
+    }
+
+    /// The last edit of the project
+    pub async fn files(&self, ctx: &Context<'_>) -> Vec<FileObject> {
+        let data = ctx.data::<ContextData>().unwrap();
+        let files = File::get_for_project(&data.db.pool, self.id).await.unwrap();
+        files.into_iter().map(FileObject::from).collect()
     }
 }
 

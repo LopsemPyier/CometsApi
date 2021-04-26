@@ -71,4 +71,16 @@ impl File {
 
         Ok(file_row)
     }
+
+    pub async fn get_for_project(pool: &PgPool, project_id: Uuid) -> Result<Vec<File>, DatabaseError> {
+        let files_row = sqlx::query_file_as!(
+			File,
+			"src/sql/file/getForProject.sql",
+			project_id
+		)
+            .fetch_all(pool)
+            .await?;
+
+        Ok(files_row)
+    }
 }

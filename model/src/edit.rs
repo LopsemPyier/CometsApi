@@ -1,14 +1,15 @@
-use uuid::Uuid;
-use sqlx::PgPool;
-use crate::error::DatabaseError;
 use chrono::{DateTime, Utc};
+use sqlx::PgPool;
+use uuid::Uuid;
+
+use crate::error::DatabaseError;
 
 #[derive(Debug, sqlx::Type)]
-#[sqlx(rename="action")]
+#[sqlx(rename = "action")]
 pub enum Action {
-    #[sqlx(rename="CREATE")]
+    #[sqlx(rename = "CREATE")]
     Create,
-    #[sqlx(rename="DELETE")]
+    #[sqlx(rename = "DELETE")]
     Delete,
     #[sqlx(rename="EDIT")]
     Edit
@@ -20,17 +21,19 @@ pub struct Edit {
     pub project: Uuid,
     pub action_type: Action,
     pub create_at: DateTime<Utc>,
-    pub author_id: Uuid
+    pub author_id: Uuid,
+    pub file: Uuid,
 }
 
 impl Edit {
-    pub async fn create(pool: &PgPool, project_id: Uuid, action: Action, author_id: Uuid) -> Result<Edit, DatabaseError> {
+    pub async fn create(pool: &PgPool, project_id: Uuid, action: Action, author_id: Uuid, file_id: Uuid) -> Result<Edit, DatabaseError> {
         let result = sqlx::query_file_as!(
             Edit,
             "src/sql/edit/create.sql",
             project_id,
             action as Action,
-            author_id
+            author_id,
+            file_id
         )
             .fetch_one(pool)
             .await;

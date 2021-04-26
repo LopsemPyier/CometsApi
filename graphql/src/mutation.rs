@@ -35,7 +35,7 @@ impl Mutation {
 
 	pub async fn create_file(&self, ctx: &Context<'_>, input: FileDto) -> FieldResult<FileObject> {
 		let token = ctx.data_opt::<utils::auth::ContextToken>();
-		if let Some(token) = token {
+		if let Some(_token) = token {
 			let data = ctx.data::<ContextData>()?;
 			return file::create(&data.db, input.name, input.extension, input.project_id, input.parent_id).await;
 		}

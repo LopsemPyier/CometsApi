@@ -1,16 +1,21 @@
-use uuid::Uuid;
-use model::edit::{Action, Edit};
+use async_graphql::{Context, ErrorExtensions, FieldResult};
 use chrono::{DateTime, Utc};
+use uuid::Uuid;
+
+use model::edit::{Action, Edit};
+use model::files::File;
 use model::user::User;
-use crate::object::user::UserObject;
-use async_graphql::Context;
+
 use crate::context::ContextData;
+use crate::error::common::CommonError;
+use crate::object::file::FileObject;
+use crate::object::user::UserObject;
 
 #[derive(async_graphql::Enum, Copy, Clone, Eq, PartialEq, Debug)]
 pub enum ActionEnum {
     CREATE,
     DELETE,
-    EDIT
+    EDIT,
 }
 
 #[derive(Debug)]
@@ -18,7 +23,8 @@ pub struct EditObject {
     pub id: Uuid,
     pub action_type: ActionEnum,
     pub create_at: DateTime<Utc>,
-    pub user_id: Uuid
+    pub user_id: Uuid,
+    pub file_id: Uuid,
 }
 
 #[async_graphql::Object]
@@ -44,6 +50,16 @@ impl EditObject {
             None
         }
     }
+
+    pub async fn file(&self, ctx: &Context<'_>) -> FieldResult<FileObject> {
+        let data = ctx.data::<ContextData>().unwrap();
+        let file = File::get_by_uuid(&data.db.pool, self.file_id).await.unwrap();
+        if let Some(file) = file {
+            Ok(FileObject::from(file))
+        } else {
+            Err(CommonError::NotFound(self.file_id).extend())
+        }
+    }
 }
 
 impl From<Action> for ActionEnum {
@@ -62,7 +78,8 @@ impl From<Edit> for EditObject {
             id: edit.id,
             action_type: ActionEnum::from(edit.action_type),
             create_at: edit.create_at,
-            user_id: edit.author_id
+            user_id: edit.author_id,
+            file_id: edit.file,
         }
     }
 }
