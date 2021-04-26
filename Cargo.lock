@@ -939,7 +939,7 @@ dependencies = [
 
 [[package]]
 name = "db"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "chrono",
  "model",
@@ -1251,7 +1251,7 @@ dependencies = [
 
 [[package]]
 name = "graphql"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "async-graphql",
  "chrono",
@@ -1649,7 +1649,7 @@ dependencies = [
 
 [[package]]
 name = "model"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "async-graphql",
  "chrono",
@@ -2353,7 +2353,7 @@ dependencies = [
 
 [[package]]
 name = "service"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "async-graphql",
  "chrono",
@@ -3094,7 +3094,7 @@ dependencies = [
 
 [[package]]
 name = "utils"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "actix-web",
  "chrono",
