@@ -26,3 +26,7 @@ pub async fn create(db: &Database, name: String, extension: String, project_id: 
 
     Ok(FileObject::from(project))
 }
+
+pub async fn delete(db: &Database, id: Uuid) -> FieldResult<bool> {
+    Ok(db.delete_file(id).await?)
+}

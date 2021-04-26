@@ -17,4 +17,8 @@ impl Database {
     pub async fn get_file_by_uuid(&self, file_id: Uuid) -> Result<Option<File>, DatabaseError> {
         File::get_by_uuid(&self.pool, file_id).await
     }
+
+    pub async fn delete_file(&self, file_id: Uuid) -> Result<bool, DatabaseError> {
+        File::delete(&self.pool, file_id).await
+    }
 }

@@ -1,4 +1,5 @@
 use async_graphql::{Context, Error, FieldResult};
+use uuid::Uuid;
 
 use schema::context::ContextData;
 use schema::dto::auth::{LoginDto, RegisterDto};
@@ -38,6 +39,15 @@ impl Mutation {
 		if let Some(_token) = token {
 			let data = ctx.data::<ContextData>()?;
 			return file::create(&data.db, input.name, input.extension, input.project_id, input.parent_id).await;
+		}
+		Err(Error::new("No token provided"))
+	}
+
+	pub async fn delete_file(&self, ctx: &Context<'_>, id: Uuid) -> FieldResult<bool> {
+		let token = ctx.data_opt::<utils::auth::ContextToken>();
+		if let Some(_token) = token {
+			let data = ctx.data::<ContextData>()?;
+			return file::delete(&data.db, id).await;
 		}
 		Err(Error::new("No token provided"))
 	}

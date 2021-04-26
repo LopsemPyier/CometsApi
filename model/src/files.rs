@@ -83,4 +83,15 @@ impl File {
 
         Ok(files_row)
     }
+
+    pub async fn delete(pool: &PgPool, id: Uuid) -> Result<bool, DatabaseError> {
+        sqlx::query_file!(
+            "src/sql/file/delete.sql",
+            id
+        )
+            .execute(pool)
+            .await?;
+
+        Ok(true)
+    }
 }
