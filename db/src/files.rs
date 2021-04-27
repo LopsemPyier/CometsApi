@@ -21,4 +21,8 @@ impl Database {
     pub async fn delete_file(&self, file_id: Uuid) -> Result<bool, DatabaseError> {
         File::delete(&self.pool, file_id).await
     }
+
+    pub async fn update_file(&self, file_id: Uuid, name: String, parent: Option<Uuid>) -> Result<File, DatabaseError> {
+        File::update(&self.pool, file_id, name, parent).await
+    }
 }

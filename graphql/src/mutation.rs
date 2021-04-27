@@ -3,7 +3,7 @@ use uuid::Uuid;
 
 use schema::context::ContextData;
 use schema::dto::auth::{LoginDto, RegisterDto};
-use schema::dto::file::FileDto;
+use schema::dto::file::{FileDto, UpdateFileDto};
 use schema::dto::project::ProjectDto;
 use schema::object::file::FileObject;
 use schema::object::project::ProjectObject;
@@ -48,6 +48,15 @@ impl Mutation {
 		if let Some(_token) = token {
 			let data = ctx.data::<ContextData>()?;
 			return file::delete(&data.db, id).await;
+		}
+		Err(Error::new("No token provided"))
+	}
+
+	pub async fn update_file(&self, ctx: &Context<'_>, id: Uuid, input: UpdateFileDto) -> FieldResult<FileObject> {
+		let token = ctx.data_opt::<utils::auth::ContextToken>();
+		if let Some(_token) = token {
+			let data = ctx.data::<ContextData>()?;
+			return file::update(&data.db, id, input.name, input.parent_id).await;
 		}
 		Err(Error::new("No token provided"))
 	}

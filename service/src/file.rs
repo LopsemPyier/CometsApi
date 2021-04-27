@@ -22,11 +22,17 @@ pub async fn get_by_uuid(id: Uuid, db: &Database) -> FieldResult<FileObject> {
 }
 
 pub async fn create(db: &Database, name: String, extension: String, project_id: Uuid, parent_id: Option<Uuid>) -> FieldResult<FileObject> {
-    let project = db.create_file(name, extension, project_id, parent_id).await?;
+    let file = db.create_file(name, extension, project_id, parent_id).await?;
 
-    Ok(FileObject::from(project))
+    Ok(FileObject::from(file))
 }
 
 pub async fn delete(db: &Database, id: Uuid) -> FieldResult<bool> {
     Ok(db.delete_file(id).await?)
+}
+
+pub async fn update(db: &Database, id: Uuid, name: String, parent: Option<Uuid>) -> FieldResult<FileObject> {
+    let file = db.update_file(id, name, parent).await?;
+
+    Ok(FileObject::from(file))
 }

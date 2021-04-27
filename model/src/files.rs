@@ -94,4 +94,18 @@ impl File {
 
         Ok(true)
     }
+
+    pub async fn update(pool: &PgPool, id: Uuid, name: String, parent: Option<Uuid>) -> Result<File, DatabaseError> {
+        let file_row = sqlx::query_file_as!(
+            File,
+            "src/sql/file/update.sql",
+            id,
+            name,
+            parent
+        )
+            .fetch_one(pool)
+            .await?;
+
+        Ok(file_row)
+    }
 }
