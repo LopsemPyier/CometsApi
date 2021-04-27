@@ -7,9 +7,9 @@ pub struct FileDto {
     /// Name
     pub name: String,
     pub project_id: Uuid,
-    pub extension: String,
+    pub extension: Option<String>,
     pub parent_id: Option<Uuid>,
-    pub folder: bool
+    pub folder: bool,
 }
 
 #[derive(InputObject)]

@@ -22,12 +22,12 @@ pub struct File {
     pub name: String,
     pub project: Uuid,
     pub file_type: FileType,
-    pub extension: String,
+    pub extension: Option<String>,
     pub parent: Option<Uuid>,
 }
 
 impl File {
-    pub async fn create(pool: &PgPool, name: String, extension: String, project_id: Uuid, file_type: FileType, parent_id: Option<Uuid>) -> Result<File, DatabaseError> {
+    pub async fn create(pool: &PgPool, name: String, extension: Option<String>, project_id: Uuid, file_type: FileType, parent_id: Option<Uuid>) -> Result<File, DatabaseError> {
         let result = sqlx::query_file_as!(
 			File,
 			"src/sql/file/create.sql",

@@ -6,7 +6,7 @@ use model::file::{File, FileType};
 use crate::Database;
 
 impl Database {
-    pub async fn create_file(&self, name: String, extension: String, project_id: Uuid, parent_id: Option<Uuid>, folder: bool) -> Result<File, DatabaseError> {
+    pub async fn create_file(&self, name: String, extension: Option<String>, project_id: Uuid, parent_id: Option<Uuid>, folder: bool) -> Result<File, DatabaseError> {
         let file_type = if folder { FileType::Folder } else { FileType::Tex };
 
         File::create(&self.pool, name, extension, project_id, file_type, parent_id).await

@@ -14,7 +14,7 @@ impl Database {
         let file = File::create(
             &self.pool,
             "main".to_string(),
-            "tex".to_string(),
+            Some("tex".to_string()),
             project.id,
             FileType::Tex,
             None,

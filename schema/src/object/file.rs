@@ -22,7 +22,7 @@ pub struct FileObject {
     pub file_type: FileTypeEnum,
     pub name: String,
     pub project_id: Uuid,
-    pub extension: String,
+    pub extension: Option<String>,
     pub parent_id: Option<Uuid>,
 }
 
@@ -41,8 +41,12 @@ impl FileObject {
         &self.name
     }
 
-    pub async fn extension(&self) -> &str {
-        &self.extension
+    pub async fn extension(&self) -> Option<&str> {
+        if let Some(extension) = &self.extension {
+            Some(&extension)
+        } else {
+            None
+        }
     }
 
     pub async fn project(&self, ctx: &Context<'_>) -> FieldResult<ProjectObject> {
