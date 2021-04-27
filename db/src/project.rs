@@ -2,7 +2,7 @@ use uuid::Uuid;
 
 use model::edit::{Action, Edit};
 use model::error::DatabaseError;
-use model::files::{File, FileType};
+use model::file::{File, FileType};
 use model::project::Project;
 
 use crate::Database;

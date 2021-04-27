@@ -1,13 +1,15 @@
 use uuid::Uuid;
 
 use model::error::DatabaseError;
-use model::files::{File, FileType};
+use model::file::{File, FileType};
 
 use crate::Database;
 
 impl Database {
-    pub async fn create_file(&self, name: String, extension: String, project_id: Uuid, parent_id: Option<Uuid>) -> Result<File, DatabaseError> {
-        File::create(&self.pool, name, extension, project_id, FileType::Tex, parent_id).await
+    pub async fn create_file(&self, name: String, extension: String, project_id: Uuid, parent_id: Option<Uuid>, folder: bool) -> Result<File, DatabaseError> {
+        let file_type = if folder { FileType::Folder } else { FileType::Tex };
+
+        File::create(&self.pool, name, extension, project_id, file_type, parent_id).await
     }
 
     pub async fn get_files(&self) -> Result<Vec<File>, DatabaseError> {

@@ -1,7 +1,7 @@
 use async_graphql::{Context, ErrorExtensions, FieldResult};
 use uuid::Uuid;
 
-use model::files::{File, FileType};
+use model::file::{File, FileType};
 use model::project::Project;
 
 use crate::context::ContextData;
@@ -13,6 +13,7 @@ pub enum FileTypeEnum {
     IMAGE,
     TEX,
     PDF,
+    FOLDER,
 }
 
 #[derive(Debug)]
@@ -74,7 +75,8 @@ impl From<FileType> for FileTypeEnum {
         match file_type {
             FileType::Image => Self::IMAGE,
             FileType::Tex => Self::TEX,
-            FileType::Pdf => Self::PDF
+            FileType::Pdf => Self::PDF,
+            FileType::Folder => Self::FOLDER
         }
     }
 }

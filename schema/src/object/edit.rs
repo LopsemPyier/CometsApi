@@ -3,7 +3,7 @@ use chrono::{DateTime, Utc};
 use uuid::Uuid;
 
 use model::edit::{Action, Edit};
-use model::files::File;
+use model::file::File;
 use model::user::User;
 
 use crate::context::ContextData;

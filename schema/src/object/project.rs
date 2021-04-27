@@ -1,7 +1,7 @@
 use async_graphql::Context;
 use uuid::Uuid;
 
-use model::{edit::Edit, files::File};
+use model::{edit::Edit, file::File};
 use model::project::Project;
 
 use crate::context::ContextData;

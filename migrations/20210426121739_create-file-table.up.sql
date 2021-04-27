@@ -2,7 +2,8 @@
 CREATE TYPE file_type as ENUM (
     'IMAGE',
     'TEX',
-    'PDF'
+    'PDF',
+    'FOLDER'
     );
 
 CREATE TABLE files
@@ -12,5 +13,5 @@ CREATE TABLE files
     parent    uuid REFERENCES files ON DELETE CASCADE,
     name      varchar                                     NOT NULL,
     file_type file_type                                   NOT NULL,
-    extension varchar                                     NOT NULL
+    extension varchar
 );

@@ -12,6 +12,8 @@ pub enum FileType {
     Tex,
     #[sqlx(rename = "PDF")]
     Pdf,
+    #[sqlx(rename = "FOLDER")]
+    Folder,
 }
 
 #[derive(Debug, sqlx::FromRow)]
