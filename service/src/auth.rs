@@ -1,8 +1,10 @@
-use async_graphql::{FieldResult, ErrorExtensions};
-use schema::dto::auth::{ LoginDto, RegisterDto };
+use async_graphql::{ErrorExtensions, FieldResult};
+use uuid::Uuid;
+
 use db::Database;
-use utils::auth::{ create_token, verify_password };
+use schema::dto::auth::{LoginDto, RegisterDto};
 use schema::error::auth::AuthError;
+use utils::auth::{create_token, verify_password};
 
 pub async fn register(input: RegisterDto, db: &Database) -> FieldResult<String> {
     let user = db.get_user_by_email(&input.email.to_lowercase()).await?;
@@ -23,7 +25,30 @@ pub async fn login(input: LoginDto, db: &Database) -> FieldResult<String> {
             Ok(create_token(user.id, user.username))
         } else {
             Err(AuthError::InvalidPassword.extend())
-        }
+        };
+    }
+    Err(AuthError::InvalidUsername.extend())
+}
+
+pub async fn update_password(db: &Database, id: Uuid, old: String, new: String) -> FieldResult<bool> {
+    let user = db.get_user_by_uuid(id).await?;
+
+    if let Some(user) = user {
+        return if verify_password(&user.password, &old) {
+            Ok(db.update_password(id, &new).await?)
+        } else {
+            Err(AuthError::InvalidPassword.extend())
+        };
+    }
+    Err(AuthError::InvalidUsername.extend())
+}
+
+pub async fn update(db: &Database, id: Uuid, username: String, email: String) -> FieldResult<String> {
+    let user = db.get_user_by_uuid(id).await?;
+
+    if let Some(_user) = user {
+        db.update_user(id, &username, &email).await?;
+        return Ok(create_token(id, username));
     }
     Err(AuthError::InvalidUsername.extend())
 }

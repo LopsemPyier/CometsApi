@@ -1,5 +1,6 @@
-use uuid::Uuid;
 use sqlx::PgPool;
+use uuid::Uuid;
+
 use crate::error::DatabaseError;
 use crate::user::User;
 
@@ -7,7 +8,7 @@ use crate::user::User;
 pub struct Project {
     pub id: Uuid,
     pub name: String,
-    pub description: String
+    pub description: String,
 }
 
 impl Project {
@@ -33,7 +34,7 @@ impl Project {
         }
     }
 
-    pub async fn add_author(pool: &PgPool, project_id: Uuid, user_id: Uuid) -> Result<(), DatabaseError> {
+    pub async fn add_author(pool: &PgPool, project_id: Uuid, user_id: Uuid) -> Result<bool, DatabaseError> {
         let result = sqlx::query_file!(
             "src/sql/project/add_author.sql",
             user_id,
@@ -44,7 +45,27 @@ impl Project {
 
         match result {
             Ok(_) => {
-                Ok(())
+                Ok(true)
+            }
+            Err(err) => {
+                eprintln!("{}", err);
+                Err(err.into())
+            }
+        }
+    }
+
+    pub async fn remove_author(pool: &PgPool, project_id: Uuid, user_id: Uuid) -> Result<bool, DatabaseError> {
+        let result = sqlx::query_file!(
+            "src/sql/project/remove_author.sql",
+            user_id,
+            project_id
+        )
+            .execute(pool)
+            .await;
+
+        match result {
+            Ok(_) => {
+                Ok(true)
             }
             Err(err) => {
                 eprintln!("{}", err);
@@ -86,5 +107,46 @@ impl Project {
             .await?;
 
         Ok(project_row)
+    }
+
+    pub async fn update(pool: &PgPool, id: Uuid, name: String, description: String) -> Result<Project, DatabaseError> {
+        let result = sqlx::query_file_as!(
+            Project,
+            "src/sql/project/update.sql",
+            id,
+            name,
+            description
+        )
+            .fetch_one(pool)
+            .await;
+
+        match result {
+            Ok(project) => {
+                Ok(project)
+            }
+            Err(err) => {
+                eprintln!("{}", err);
+                Err(err.into())
+            }
+        }
+    }
+
+    pub async fn delete(pool: &PgPool, id: Uuid) -> Result<bool, DatabaseError> {
+        let result = sqlx::query_file!(
+            "src/sql/project/delete.sql",
+            id
+        )
+            .execute(pool)
+            .await;
+
+        match result {
+            Ok(_) => {
+                Ok(true)
+            }
+            Err(err) => {
+                eprintln!("{}", err);
+                Err(err.into())
+            }
+        }
     }
 }

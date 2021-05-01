@@ -1,15 +1,16 @@
-use super::error::DatabaseError;
-
-use uuid::Uuid;
 use sqlx::PgPool;
+use uuid::Uuid;
+
 use crate::project::Project;
+
+use super::error::DatabaseError;
 
 #[derive(Debug, sqlx::FromRow)]
 pub struct User {
 	pub id: Uuid,
 	pub username: String,
 	pub password: String,
-	pub email: String
+	pub email: String,
 }
 
 impl User {
@@ -80,5 +81,30 @@ impl User {
 			.await?;
 
 		Ok(user_row)
+	}
+
+	pub async fn update_password(pool: &PgPool, user_id: Uuid, new_password: &String) -> Result<bool, DatabaseError> {
+		sqlx::query_file!(
+			"src/sql/user/update_password.sql",
+			user_id,
+			new_password
+		)
+			.execute(pool)
+			.await?;
+
+		Ok(true)
+	}
+
+	pub async fn update(pool: &PgPool, user_id: Uuid, username: &String, email: &String) -> Result<bool, DatabaseError> {
+		sqlx::query_file!(
+			"src/sql/user/update.sql",
+			user_id,
+			username,
+			email
+		)
+			.execute(pool)
+			.await?;
+
+		Ok(true)
 	}
 }

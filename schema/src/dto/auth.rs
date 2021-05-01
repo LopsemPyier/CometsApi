@@ -17,5 +17,14 @@ pub struct LoginDto {
     /// Email
     pub email: String,
     /// Password
-    pub password: String
+    pub password: String,
+}
+
+#[derive(InputObject)]
+/// The DTO for Update informations
+pub struct UpdateUserDto {
+    /// Email
+    pub email: String,
+    /// Username
+    pub username: String,
 }

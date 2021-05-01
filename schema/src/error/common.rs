@@ -1,11 +1,13 @@
-use uuid::Uuid;
 use async_graphql::{ErrorExtensions, FieldError};
 use thiserror::Error;
+use uuid::Uuid;
 
 #[derive(Debug, Error)]
 pub enum CommonError {
     #[error("Element not found in the database")]
     NotFound(Uuid),
+    #[error("No user with email")]
+    NoEmail(String),
     #[error("Invalid request")]
     InvalidRequest(String),
     #[error("Internal Error")]
@@ -19,6 +21,10 @@ impl ErrorExtensions for CommonError {
             Self::NotFound(id) => {
                 e.set("code", "NOT_FOUND");
                 e.set("message", format!("Element not found with id : {}", id))
+            },
+            Self::NoEmail(email) => {
+                e.set("code", "NO_EMAIL");
+                e.set("message", format!("User not found with email : {}", email))
             },
             Self::InternalError(message) => {
                 e.set("code", "INTERNAL_ERROR");

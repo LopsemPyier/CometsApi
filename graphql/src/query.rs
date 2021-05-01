@@ -17,6 +17,10 @@ impl Query {
 		let data = ctx.data::<ContextData>()?;
 		user::get_all(&data.db).await
 	}
+	pub async fn user_by_email(&self, ctx: &Context<'_>, email: String) -> FieldResult<UserObject> {
+		let data = ctx.data::<ContextData>()?;
+		user::get_by_email(email, &data.db).await
+	}
 
 	pub async fn user(&self, ctx: &Context<'_>, id: Uuid) -> FieldResult<UserObject> {
 		let data = ctx.data::<ContextData>()?;
@@ -26,6 +30,15 @@ impl Query {
 	pub async fn projects(&self, ctx: &Context<'_>) -> FieldResult<Vec<ProjectObject>> {
 		let data = ctx.data::<ContextData>()?;
 		project::get_all(&data.db).await
+	}
+
+	pub async fn dashboard(&self, ctx: &Context<'_>) -> FieldResult<Vec<ProjectObject>> {
+		let token = ctx.data_opt::<utils::auth::ContextToken>();
+		if let Some(token) = token {
+			let data = ctx.data::<ContextData>()?;
+			return project::get_for_user(token.user_id, &data.db).await;
+		}
+		Err(Error::new("No token provided"))
 	}
 
 	pub async fn project(&self, ctx: &Context<'_>, id: Uuid) -> FieldResult<ProjectObject> {
